@@ -1,3 +1,3 @@
 import helloword  from './hellowword'
 
-document.write(helloword())
+document.write(helloword()+'222')
