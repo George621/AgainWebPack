@@ -4,6 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const autoprefixer = require('autoprefixer');
 
 module.exports = {
   // entry: './src/index.js', // 单入口
@@ -27,7 +28,8 @@ module.exports = {
         use: [
           // 'style-loader', // MiniCssExtractPlugin 插件冲突，一个是提出一个文件，另一个是插入head标签中
           MiniCssExtractPlugin.loader,
-          'css-loader'
+          'css-loader',
+          
         ]
       },
       {
@@ -36,7 +38,17 @@ module.exports = {
           // 'style-loader',
           MiniCssExtractPlugin.loader,
           'css-loader',
-          'less-loader'
+          'less-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions:{
+                plugins: () => [
+                  require('autoprefixer')
+                ]
+              }
+            }
+          }
         ]
       },
       {
