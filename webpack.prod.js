@@ -3,14 +3,14 @@ const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // const autoprefixer = require('autoprefixer');
 
 module.exports = {
   // entry: './src/index.js', // 单入口
-  entry: { 
-    index: './src/index.js',
-    search: './src/search.js'
+  entry: {
+    index: './src/index/index.js',
+    search: './src/search/search.js'
   },
   output: {
     path: path.join(__dirname, 'dist'),
@@ -29,25 +29,6 @@ module.exports = {
           // 'style-loader', // MiniCssExtractPlugin 插件冲突，一个是提出一个文件，另一个是插入head标签中
           MiniCssExtractPlugin.loader,
           'css-loader',
-          {
-            loader: 'postcss-loader',
-            options: {
-                ident: 'postcss',
-                plugins: [
-                    require('autoprefixer')({
-                        overrideBrowserslist: [   //这里autoprefixer 改成了这个
-                            "defaults",
-                            "not ie < 11",
-                            "last 2 versions",
-                            "> 1%",
-                            "iOS 7",
-                            "last 3 iOS versions"
-                        ]
-                    })
-                ]
-            }
-        },
-　　　　　'less-loader',
         ]
       },
       {
@@ -60,11 +41,18 @@ module.exports = {
           {
             loader: 'postcss-loader',
             options: {
-              postcssOptions:{
+              postcssOptions: {
                 plugins: () => [
                   require('autoprefixer')()
                 ]
               }
+            }
+          },
+          {
+            loader: 'px2rem-loader',
+            options: {
+              remUnit: 75,
+              remPrecision: 8 
             }
           }
         ]
@@ -95,22 +83,22 @@ module.exports = {
       }
     ]
   },
-  plugins:[
+  plugins: [
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
       filename: '[name]_[contenthash:8].css'
     }),
     new OptimizeCssAssetsWebpackPlugin({
-      assetNameRegExp:/\.css$/g,
-      cssProcessor:require('cssnano')
+      assetNameRegExp: /\.css$/g,
+      cssProcessor: require('cssnano')
     }),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'src/search.html'),
-      filename:'search.html',
+      template: path.join(__dirname, 'src/search/search.html'),
+      filename: 'search.html',
       chunks: 'search',
       inject: true,
       minify: {
-        html5: true, 
+        html5: true,
         collapseWhitespace: true,
         preserveLineBreaks: false,
         minifyCSS: true,
@@ -119,12 +107,12 @@ module.exports = {
       }
     }),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'src/index.html'),
-      filename:'index.html',
+      template: path.join(__dirname, 'src/index/index.html'),
+      filename: 'index.html',
       chunks: 'index',
       inject: true,
       minify: {
-        html5: true, 
+        html5: true,
         collapseWhitespace: true,
         preserveLineBreaks: false,
         minifyCSS: true,
@@ -132,5 +120,5 @@ module.exports = {
         removeComments: false
       }
     }),
-  ] 
+  ]
 };
