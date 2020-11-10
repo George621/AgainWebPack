@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin');
 // const autoprefixer = require('autoprefixer');
 
 const setMAP = () => { // 动态获取多入口打包 entry  HtmlWebpackPlugins
@@ -12,10 +13,10 @@ const setMAP = () => { // 动态获取多入口打包 entry  HtmlWebpackPlugins
   const HtmlWebpackPlugins = [];
   const entryFiles = glob.sync(path.join(__dirname, './src/*/index.js'));
 
-  Object.keys(entryFiles).map((index)=>{
+  Object.keys(entryFiles).map((index) => {
     const entryFile = entryFiles[index];
     // /Users/georgezhang/Desktop/AgainWebPack/src/index/index.js
-    const  match = entryFile.match(/src\/(.*)\/index.js/);
+    const match = entryFile.match(/src\/(.*)\/index.js/);
     const pageName = match && match[1];
 
     entry[pageName] = entryFile;
@@ -23,7 +24,7 @@ const setMAP = () => { // 动态获取多入口打包 entry  HtmlWebpackPlugins
       new HtmlWebpackPlugin({
         template: path.join(__dirname, `src/${pageName}/index.html`),
         filename: `${pageName}.html`,
-        chunks: [pageName],
+        chunks: ['vendors',pageName],
         inject: true,
         minify: {
           html5: true,
@@ -39,16 +40,17 @@ const setMAP = () => { // 动态获取多入口打包 entry  HtmlWebpackPlugins
   return { HtmlWebpackPlugins, entry }
 }
 
-const  { HtmlWebpackPlugins, entry } = setMAP();
+const { HtmlWebpackPlugins, entry } = setMAP();
 
 module.exports = {
   // entry: './src/index.js', // 单入口
-  entry:  entry,
+  entry: entry,
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name]_[chunkhash:8].js'
   },
-  mode: 'production',
+  // mode: 'production',
+  mode: 'none',
   module: {
     rules: [
       {
@@ -123,7 +125,19 @@ module.exports = {
     new OptimizeCssAssetsWebpackPlugin({
       assetNameRegExp: /\.css$/g,
       cssProcessor: require('cssnano')
-    })
+    }),
     
-  ].concat(HtmlWebpackPlugins)
+  ].concat(HtmlWebpackPlugins),
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /react|react-dom/,
+          name: 'vendors',
+          chunks: 'all',
+          minChunks: 1
+        }
+      }
+    }
+  }
 };

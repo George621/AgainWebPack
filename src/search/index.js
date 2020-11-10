@@ -1,8 +1,8 @@
 import React,{PureComponent} from 'react'
-
 import ReactDom from 'react-dom'
 import './search.less'
 import logo from './images/invoice_has_check.svg'
+
 class Search extends PureComponent{
 
   render() {
