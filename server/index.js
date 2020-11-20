@@ -7,8 +7,6 @@ const express = require('express');
 const { renderToString } = require('react-dom/server');
 const SSR = require('../dist/search-server');
 
-server(process.env.PORT || 3000)
-
 const server = (port) => {
   const app = express();
   app.use(express.static('dist'));
@@ -20,6 +18,7 @@ const server = (port) => {
     console.log('Serveris running on port' + port)
   })
 }
+server(process.env.PORT || 3000)
 
 const renderMarkup = (str) => {
   return `<!DOCTYPE html>
