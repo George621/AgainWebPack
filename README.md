@@ -33,3 +33,6 @@
 ## js使用chuankhash  css 使用contenthash
 ## js使用chuankhash  css 使用contenthash
 ## js使用chuankhash  css 使用contenthash
+# 遗留问题
+ 1. postcss
+ 2. 
